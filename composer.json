@@ -1,0 +1,12 @@
+{
+    "name": "toni/sistembar",
+    "description": "\"sisyema de estoque para bar\"",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antonio Crispim",
+            "email": "toni.cpd@hotmail.com"
+        }
+    ],
+    "require": {}
+}

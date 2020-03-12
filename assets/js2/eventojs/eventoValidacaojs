@@ -1,0 +1,422 @@
+$(function(){
+
+ // -----------------------Validacao do cnpj -------------------------------------------//	 
+$("#ind-const").focus(); // seta focus
+$('#matriculaEvt').mask("00.000.000/0000-00");
+$("input[name=nmInscricao]").blur(function(obj){
+		obj.preventDefault();// 
+		
+		let valorcnpj = $(this).val();	
+			
+		if(valorcnpj.length > 8 && valorcnpj != '' && valorcnpj.length <= 18 ){
+			 
+			valorcnpj = valorcnpj.replace(/[^\d]+/g,'');
+			
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+	
+		// Elimina CNPJs invalidos conhecidos
+		if (valorcnpj.length != 14 || 
+			valorcnpj == "00000000000000" || 
+			valorcnpj == "11111111111111" || 
+			valorcnpj == "22222222222222" || 
+			valorcnpj == "33333333333333" || 
+			valorcnpj == "44444444444444" || 
+			valorcnpj == "55555555555555" || 
+			valorcnpj == "66666666666666" || 
+			valorcnpj == "77777777777777" || 
+			valorcnpj == "88888888888888" || 
+			valorcnpj == "99999999999999"){
+			$(this).css({"background" : "#FF6347"}).val('').focus();
+	
+			return false;
+		}
+		// Valida DVs
+		tamanho = valorcnpj.length - 2
+		numeros = valorcnpj.substring(0,tamanho);
+		digitos = valorcnpj.substring(tamanho);
+		soma = 0;
+		pos = tamanho - 7;
+		for (i = tamanho; i >= 1; i--) {
+		  soma += numeros.charAt(tamanho - i) * pos--;
+		  if (pos < 2)
+				pos = 9;
+		}
+		resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+		if (resultado != digitos.charAt(0))
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}else{
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}	             
+		return true;
+
+	})
+
+	//----------------------Razao--------------------------------//
+	$("input[name=razsocialEvt]").blur(function(obj){
+	let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+	
+	if((valorincr != "") && (valorincr.length > 6) && (valorincr.length < 60)) {
+
+		$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+		$(this).css({"background" : "#FFF"});
+		
+		} else {
+		
+			$(this).css({"background" : "#FF6347"}).focus();
+		}
+	});
+
+	//----------------------Nome--------------------------------//
+	$("input[name=nomeFunc]").blur(function(obj){
+		// /$("#cnpj").focus();
+		//let atribcnpj = $(obj).attr('input');	
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 6) && (valorincr.length < 60)) {
+	
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			
+			} else {
+			
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+		});
+
+		//----------------------CPF--------------------------------//
+	$('#cpfFunc').mask("000.000.000-00")
+	$("input[name=cpfFunc]").blur(function(obj){
+			obj.preventDefault();// 
+		
+		let valorcpf = $(this).val();	
+	
+		if(valorcpf.length > 0 && valorcpf != '' && valorcpf.length <= 14){
+			valorcpf = valorcpf.replace(/[^\d]+/g,'');
+	
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+		// Elimina CPFs invalidos conhecidos	
+		if (valorcpf.length != 11 || 
+			valorcpf == "00000000000" || 
+			valorcpf == "11111111111" || 
+			valorcpf == "22222222222" || 
+			valorcpf == "33333333333" || 
+			valorcpf == "44444444444" || 
+			valorcpf == "55555555555" || 
+			valorcpf == "66666666666" || 
+			valorcpf == "77777777777" || 
+			valorcpf == "88888888888" || 
+			valorcpf == "99999999999"){
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;		
+		}
+		// Valida 1o digito	
+		add = 0;	
+		for (i=0; i < 9; i ++)		
+			add += parseInt(valorcpf.charAt(i)) * (10 - i);	
+			rev = 11 - (add % 11);	
+			if (rev == 10 || rev == 11)		
+				rev = 0;	
+			if (rev != parseInt(valorcpf.charAt(9)))
+				$(this).css({"background" : "#FF6347"}).focus();		
+				return false;		
+	
+		// Valida 2o digito	
+		add = 0;	
+		for (i = 0; i < 10; i ++)		
+			add += parseInt(valorcpf.charAt(i)) * (11 - i);	
+		rev = 11 - (add % 11);	
+		if (rev == 10 || rev == 11)	
+			rev = 0;	
+		if (rev != parseInt(valorcpf.charAt(10)))
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;		
+		
+		};
+		return true;   
+	});
+
+	//----------------------Matricula--------------------------------//
+	$("input[name=matriculaFunc]").blur(function(obj){
+			let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+			
+			if((valorincr != "") && (valorincr.length > 5) && (valorincr.length < 30)) {
+		
+				$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+				$(this).css({"background" : "#FFF"});
+				
+				} else {
+				
+					$(this).css({"background" : "#FF6347"}).focus();
+				}
+	});
+
+	//----------------------Codigo NIS--------------------------------//
+	//$('#nisFunc').mask("0000")
+	$("input[name=nisFunc]").blur(function(obj){
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 10) && (valorincr.length <= 11)) {
+	
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			
+			} else {
+			
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});		
+
+	//----------------------Codigo Categoria--------------------------------//
+	$('#codCateFunc').mask("000")
+	$("input[name=codCateFunc]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 2) && (valorincr.length <= 3)) {
+	
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			
+			} else {
+			
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});		
+
+//----------------------Codigo Motivo afastamento--------------------------------//
+	$('#codMtvAfst').mask("00")
+	$("input[name=codMtvAfst]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+
+		if((valorincr != "") && (valorincr.length > 1) && (valorincr.length <= 2)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});		
+
+	//----------------------Informações do Evento--------------------------------//
+	$("input[name=descMtvAfast]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 2) && (valorincr.length <= 100)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});	
+
+	//----------------------Codigo Cid--------------------------------//
+	//$('#codCid').mask("0000")
+	$("input[name=codCid]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 2) && (valorincr.length <= 4)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});	
+
+	//----------------------Qtd Dias--------------------------------//
+	$('#diasAfast').mask("0000")
+	$("input[name=diasAfast]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 1) && (valorincr.length <= 4)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});	
+
+	
+	//----------------------Nome do Medicos--------------------------------//
+	// $('#diasAfast').mask("0000")
+	$("input[name=nmMedico]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 2) && (valorincr.length <= 70)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});	
+
+	debugger
+	//----------------------Org de Classe--------------------------------//
+	// $('#nrInsOrg').mask("0000")
+	$("input[name=nrInsOrg]").blur(function(obj){
+		obj.preventDefault();// 
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 3) && (valorincr.length <= 14)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});
+
+	//----------------------Org de Classe--------------------------------//
+	//$('#nrInsOrg').mask("00");
+	//$("input[name=nrInsOrg]").blur(function(obj){
+	//	obj.preventDefault();// 
+
+	//	let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+	//	if((valorincr != "") && (valorincr.length > 0) && (valorincr.length < 3)) {
+	//		$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+	//		$(this).css({"background" : "#FFF"});
+	//		} else {
+	//			$(this).css({"background" : "#FF6347"}).focus();
+	//		}
+	//});
+
+// -----------------------CNPJ do Órgão/Entidade -------------------------------------------//
+$('#cnpj').mask("00.000.000/0000-00");
+$("input[name=cnpjOrgEnt]").blur(function(obj){
+		obj.preventDefault();// 
+		
+		let valorcnpj = $(this).val();	
+			
+		if(valorcnpj.length > 8 && valorcnpj != '' && valorcnpj.length <= 18 ){
+			 
+			valorcnpj = valorcnpj.replace(/[^\d]+/g,'');
+			
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+	
+		// Elimina CNPJs invalidos conhecidos
+		if (valorcnpj.length != 14 || 
+			valorcnpj == "00000000000000" || 
+			valorcnpj == "11111111111111" || 
+			valorcnpj == "22222222222222" || 
+			valorcnpj == "33333333333333" || 
+			valorcnpj == "44444444444444" || 
+			valorcnpj == "55555555555555" || 
+			valorcnpj == "66666666666666" || 
+			valorcnpj == "77777777777777" || 
+			valorcnpj == "88888888888888" || 
+			valorcnpj == "99999999999999"){
+			$(this).css({"background" : "#FF6347"}).val('').focus();
+	
+			return false;
+		}
+		// Valida DVs
+		tamanho = valorcnpj.length - 2
+		numeros = valorcnpj.substring(0,tamanho);
+		digitos = valorcnpj.substring(tamanho);
+		soma = 0;
+		pos = tamanho - 7;
+		for (i = tamanho; i >= 1; i--) {
+		  soma += numeros.charAt(tamanho - i) * pos--;
+		  if (pos < 2)
+				pos = 9;
+		}
+		resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+		if (resultado != digitos.charAt(0))
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}else{
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}	             
+		return true;
+
+	})
+
+
+	// -----------------------CNPJ do Sindicato -------------------------------------------//
+$('#cnpj').mask("00.000.000/0000-00");
+$("input[name=cnpjSind]").blur(function(obj){
+		obj.preventDefault();// 
+		
+		let valorcnpj = $(this).val();	
+			
+		if(valorcnpj.length > 8 && valorcnpj != '' && valorcnpj.length <= 18 ){
+			 
+			valorcnpj = valorcnpj.replace(/[^\d]+/g,'');
+			
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+	
+		// Elimina CNPJs invalidos conhecidos
+		if (valorcnpj.length != 14 || 
+			valorcnpj == "00000000000000" || 
+			valorcnpj == "11111111111111" || 
+			valorcnpj == "22222222222222" || 
+			valorcnpj == "33333333333333" || 
+			valorcnpj == "44444444444444" || 
+			valorcnpj == "55555555555555" || 
+			valorcnpj == "66666666666666" || 
+			valorcnpj == "77777777777777" || 
+			valorcnpj == "88888888888888" || 
+			valorcnpj == "99999999999999"){
+			$(this).css({"background" : "#FF6347"}).val('').focus();
+	
+			return false;
+		}
+		// Valida DVs
+		tamanho = valorcnpj.length - 2
+		numeros = valorcnpj.substring(0,tamanho);
+		digitos = valorcnpj.substring(tamanho);
+		soma = 0;
+		pos = tamanho - 7;
+		for (i = tamanho; i >= 1; i--) {
+		  soma += numeros.charAt(tamanho - i) * pos--;
+		  if (pos < 2)
+				pos = 9;
+		}
+		resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+		if (resultado != digitos.charAt(0))
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}else{
+			$(this).css({"background" : "#FF6347"}).focus();
+			return false;
+		}	             
+		return true;
+
+	})
+
+	//----------------------Numero de Processo--------------------------------//
+	$("input[name=nrprocesso]").blur(function(obj){
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 3) && (valorincr.length <= 21)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});
+
+
+	//----------------------Recibo --------------------------------//
+	$("input[name=recibo]").blur(function(obj){
+		let valorincr = $(this).val().replace(/[^a-zA-Z 0-9]+/g,'');
+		
+		if((valorincr != "") && (valorincr.length > 1) && (valorincr.length <= 40)) {
+			$(this).css({"border" : "1px solid #32CD32", "padding": "2px"});
+			$(this).css({"background" : "#FFF"});
+			} else {
+				$(this).css({"background" : "#FF6347"}).focus();
+			}
+	});
+
+});

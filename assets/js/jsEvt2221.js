@@ -1,0 +1,407 @@
+// ----- EMPRESA ---------//
+$(document).ready(function() {
+    $("#ModalParceiroEvt2221").on('keyup', function() {
+        var buscEvtEmp = $("#buscParcEvt2221").val();
+
+        if (buscEvtEmp != '') {
+            $.ajax({
+                url: BASE_URL + "/ajax2221/buscaEmpresaEvtTox",
+                type: 'POST',
+                datatype: 'json',
+                cache: false,
+                async: false,
+                data: { buscEvtEmp: buscEvtEmp },
+                success: function(data) {
+                    json = data.replace(/(\r\n|\n|\r)/gm, "");
+                    var json = $.parseJSON(json);
+                    var html = '';
+                    for (var i = 0; i < json.length && json != ''; ++i) {
+                        html += '<tr id="trtr"> <td id="cdempevtmt">' + json[i].codempresa +
+                            '</td> <td id="rzsempeevtmt">' + json[i].razaosocial +
+                            '</td> <td id="ntmempevtmt">' + json[i].nrmatricula +
+                            '</td> <td id="idempevtmt" style="Display:none">' + json[i].idempresa +
+                            '</td> <td id="tipoempevtmt" style="Display:none">' + json[i].tipomatricula +
+                            '</td></tr>';
+                    }
+                    $('#bodyEmpresaEvtTox').html(html);
+                    $('#bodyEmpresaEvtTox').show();
+                },
+            })
+            return false;
+        }
+    })
+    $("input[name=tableDdEmpEvt]").keyup(function() { //pega o css da tabela 
+        var tabela = $(this).attr('alt');
+        if ($(this).val() != "") {
+            $("." + tabela + " tbody>tr").hide();
+            $("." + tabela + " td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+        } else {
+            $("." + tabela + " tbody>tr").show();
+        }
+    });
+    var vl = '';
+    $.extend($.expr[":"], {
+        "contains-ci": function(elem, i, match, array) {
+            return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+    pegarValores();
+
+    function pegarValores() {
+        $(document).ready(function() {
+            $("#bodyEmpresaEvtTox").on('click', 'tr', function(e) {
+                e.preventDefault();
+                $(this).toggleClass('ativo');
+                $(this).siblings().removeClass('ativo');
+                var cdempmt = $(this).find('td[id=cdempevtmt]').text();
+                var rzempmt = $(this).find('td[id=rzsempeevtmt]').text();
+                var nmemmt = $(this).find('td[id=ntmempevtmt]').text();
+                var idempevt = $(this).find('td[id=idempevtmt]').text();
+                var tpmatricla = $(this).find('td[id=tipoempevtmt]').text();
+                jsonmonit = { 'codemp': cdempmt, 'razaoemp': rzempmt, 'numemp': nmemmt, 'txempid': idempevt, 'tipoMatricula': tpmatricla };
+                pegarvlaso(jsonmonit);
+            });
+        });
+    }
+
+    function pegarvlaso(jsonmonit) {
+        $("#enviaEvtMonit").on('click', function(e) {
+            e.preventDefault();
+            if (jsonmonit != '') {
+
+                $("#CodTox_Empresa").val(jsonmonit.codemp);
+                $("#nomTox_Empresa").val(jsonmonit.razaoemp);
+                $("#nicTox_Empresaid").val(jsonmonit.numemp);
+                $("#idToxEmpresa").val(jsonmonit.txempid);
+                $("#tipoMatriculaToxParc").val(jsonmonit.tipoMatricula);
+
+            }
+            //carregarDados();
+            $("#bodyEmpresaEvtTox tr").remove();
+        });
+        return false;
+    }
+    $("#enviaEvtMonit").on('click', function() {
+        $("#bodyEmpresaEvtTox tr").remove();
+    });
+    $("#fecharEvtMonit").on('click', function() {
+        $("#bodyEmpresaEvtTox tr").remove();
+    });
+})
+
+
+
+// ----- Parceiro ---------//
+$(document).ready(function() {
+    $("#modalParceiros2221").on('keyup', function() {
+
+        var nomeParceiro = $("#codParceirosBusca").val();
+        if (nomeParceiro != '') {
+            $.ajax({
+                url: BASE_URL + "/ajax2221/setParceirosEvtTox2221",
+                type: 'POST',
+                datatype: 'json',
+                cache: false,
+                async: false,
+                data: { nomeParceiro: nomeParceiro },
+                success: function(data) {
+                    json = data.replace(/(\r\n|\n|\r)/gm, "");
+                    var json = $.parseJSON(json);
+                    var html = '';
+                    for (var i = 0; i < json.length && json != ''; ++i) {
+                        html += '<tr id="trtr"> <td id="cdparcevt">' + json[i].codparceiro +
+                            '</td> <td id="rzparcevt">' + json[i].nome +
+                            '</td> <td id="ntparcevt">' + json[i].cnpj + '</td></tr>';
+                    }
+                    $('#bodyParceiros2221').html(html);
+                    $('#bodyParceiros2221').show();
+                },
+            })
+            return false;
+        }
+    })
+    $("input[name=tbModalParceiros]").keyup(function() { //pega o css da tabela 
+        var tabela = $(this).attr('alt');
+        if ($(this).val() != "") {
+            $("." + tabela + " tbody>tr").hide();
+            $("." + tabela + " td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+        } else {
+            $("." + tabela + " tbody>tr").show();
+        }
+    });
+    var vl = '';
+    $.extend($.expr[":"], {
+        "contains-ci": function(elem, i, match, array) {
+            return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+
+    pegarValores();
+
+    function pegarValores() {
+        $(document).ready(function() {
+            $("#bodyParceiros2221").on('click', 'tr', function(e) {
+                e.preventDefault();
+                $(this).toggleClass('ativo');
+                $(this).siblings().removeClass('ativo');
+                var cdparcemt = $(this).find('td[id=cdparcevt]').text();
+                var rzparcmt = $(this).find('td[id=rzparcevt]').text();
+                var nmparcmt = $(this).find('td[id=ntparcevt]').text();
+                jsonparce = { 'codparceiro': cdparcemt, 'razaoparcer': rzparcmt, 'numparceiro': nmparcmt };
+                pegarvlaso(jsonparce);
+            });
+        });
+    }
+
+    function pegarvlaso(jsonparce) {
+        $("#sendParceria").on('click', function(e) {
+
+            if (jsonparce != '') {
+
+                $("input[name=codToxParce]").val(jsonparce.codparceiro);
+                $("#nicTox_Parceria").val(jsonparce.numparceiro);
+                $("#nomeTox_Parceiro").val(jsonparce.razaoparcer);
+
+            }
+            //carregarDados();
+            $("#bodyParceiros2221 tr").remove();
+            e.preventDefault();
+        });
+    }
+    $("#sendParceria").on('click', function() {
+        $("#bodyParceiros2221 tr").remove();
+    });
+    $("#closeParceria").on('click', function() {
+        $("#bodyParceiros2221 tr").remove();
+    });
+
+})
+
+// ----- Funcionarios ---------//
+$(document).ready(function() {
+        $("#modalParcFuncionario").on('keyup', function() {
+            var buscDdFuncionarios = $("#dadosParc_Func").val();
+            var buscDdEmp = $("#CodTox_Empresa").val();
+            console.log(buscDdFuncionarios, buscDdEmp);
+
+            if (buscDdFuncionarios != '' && buscDdEmp != '') {
+                $.ajax({
+                    url: BASE_URL + "/ajax2221/getFuncionarioEvtTox2221",
+                    type: 'POST',
+                    datatype: 'json',
+                    cache: false,
+                    async: false,
+                    data: { buscDdFuncionarios: buscDdFuncionarios, buscDdEmp: buscDdEmp },
+                    success: function(data) {
+                        json = data.replace(/(\r\n|\n|\r)/gm, "");
+                        var json = $.parseJSON(json);
+                        var html = '';
+                        for (var i = 0; i < json.length && json != ''; ++i) {
+                            html += '<tr id="trtr"> <td id="cdfuncionaroevt">' + json[i].codfuncionario +
+                                '</td> <td id="nomefuncionarioevt">' + json[i].nomefuncionario +
+                                '</td> <td id="nitfuncionarioevt">' + json[i].cpf +
+                                '</td> <td id="categicfuncionarioevt" style="Display:none">' + json[i].codcategoria +
+                                '</td> <td id="pisfuncionarioevt" style="Display:none">' + json[i].pis +
+                                '</td> <td id="matricfuncionarioevt" style="Display:none">' + json[i].matriculaempregador +
+                                '</td></tr>';
+                        }
+                        $('#bodyDdParcFc').html(html);
+                        $('#bodyDdParcFc').show();
+                    },
+                })
+                return false;
+            }
+        })
+        $("input[name=tableDdParcFc]").keyup(function() { //pega o css da tabela 
+            var tabela = $(this).attr('alt');
+            if ($(this).val() != "") {
+                $("." + tabela + " tbody>tr").hide();
+                $("." + tabela + " td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+            } else {
+                $("." + tabela + " tbody>tr").show();
+            }
+        });
+        var vl = '';
+        $.extend($.expr[":"], {
+            "contains-ci": function(elem, i, match, array) {
+                return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+        });
+        pegarValores();
+
+        function pegarValores() {
+            $(document).ready(function() {
+                $("#bodyDdParcFc").on('click', 'tr', function(e) {
+                    e.preventDefault();
+                    $(this).toggleClass('ativo');
+                    $(this).siblings().removeClass('ativo');
+                    var cdfuncevt = $(this).find('td[id=cdfuncionaroevt]').text();
+                    var nomfuncevt = $(this).find('td[id=nomefuncionarioevt]').text();
+                    var nitfuncevt = $(this).find('td[id=nitfuncionarioevt]').text();
+                    var matricfuncevt = $(this).find('td[id=matricfuncionarioevt]').text();
+                    var pisfuncevt = $(this).find('td[id=pisfuncionarioevt]').text();
+                    var cateforiafuncevt = $(this).find('td[id=categicfuncionarioevt]').text();
+                    jsonmonit = { 'codevtfuncionario': cdfuncevt, 'nomeevtfuncionario': nomfuncevt, 'nitevtfuncionario': nitfuncevt, 'matricevtfuncionario': matricfuncevt, 'pisevtfuncionario': pisfuncevt, 'categoriatx': cateforiafuncevt };
+                    pegarvlaso(jsonmonit);
+                });
+            });
+        }
+
+        function pegarvlaso(jsonmonit) {
+            $("#enviaDbParcFuncionarios").on('click', function(e) {
+                e.preventDefault();
+                console.log(jsonmonit);
+                if (jsonmonit != '') {
+                    if (jsonmonit.codevtfuncionario != '' && jsonmonit.nomeevtfuncionario != '' && jsonmonit.nitevtfuncionario != '') {
+                        var count = 1;
+                        while (document.getElementById("codigoToxFuncionario" + count) != null) {
+                            count += 1;
+                        }
+                        var cols = '';
+                        var i = -1;
+                        for (i in jsonmonit) {
+                            var cols = "<tr>" +
+                                "<td>" + jsonmonit.codevtfuncionario + "</td><input type=hidden value='" + jsonmonit.codevtfuncionario + "'name=codigoTxFuncionario" + count + " id='codigoToxFuncionario" + count + "'/>" +
+                                "<td>" + jsonmonit.nomeevtfuncionario + "</td><input type=hidden value='" + jsonmonit.nomeevtfuncionario + "' name=nomeTxFuncionario" + count + " id='nomeToxFuncionario" + count + "'/>" +
+                                "<td>" + jsonmonit.nitevtfuncionario + "</td><input type=hidden value='" + jsonmonit.nitevtfuncionario + "' name=nitTxFuncionario" + count + " id='nitToxFuncionario" + count + "'/>" +
+                                "<td>" + jsonmonit.matricevtfuncionario + "</td><input type=hidden value='" + jsonmonit.matricevtfuncionario + "' name=matricTxFuncionario" + count + " id='matricToxFuncionario" + count + "'/>" +
+                                "<td>" + jsonmonit.pisevtfuncionario + "</td><input type=hidden value='" + jsonmonit.pisevtfuncionario + "' name=pisTxFuncionario" + count + " id='pisToxFuncionario" + count + "'/>" +
+                                "<td>" + jsonmonit.categoriatx + "</td><input type=hidden value='" + jsonmonit.categoriatx + "' name=categoriatox" + count + " id='categoriatox" + count + "'/>" +
+                                "<td><a href=javascript:; onclick= 'excluirProd(this)'>Excluir</a></td></tr>";
+                        }
+                        $("#bodyDdFuncionarioTox").append(cols);
+                        var rowCount = $('table#tabelEvt2221Parceiro tbody tr:last').index() + 1;
+                        console.log(rowCount)
+                        $('#codToxParceFuncionario').val(rowCount);
+                    }
+                }
+                jsonmonit = '';
+
+            });
+        }
+        $("#enviaDbParcFuncionarios").on('click', function() {
+            $("#bodyDdParcFc tr").remove();
+        });
+        $("#fechaDbParcFuncionarios").on('click', function() {
+            $("#bodyDdParcFc tr").remove();
+        });
+
+        $("#tabelEvt2221Parceiro").on('click', 'tr', function(obj) {
+            let id = $(obj).attr('data-column-id');
+            var rowCount = $('table#tabelEvt2221Parceiro tbody tr:last').index() - 1;
+            console.log(rowCount)
+            $('#codToxParceFuncionario').val(rowCount);
+            $(this).closest('tr').remove();
+        });
+
+        // function excluirProd(obj){
+        // $("#tabelEvt2221Parceiro").on('dblclick', 'tr',function(obj){
+        //     let id = $(obj).attr('data-column-id');
+        //     $(this).closest('tr').remove();
+        // });
+        // }
+    })
+    // $(document).ready(function(){
+    //     $('#btnInsertParce').on('click', function(e){
+    //         e.preventDefault();
+    //     })
+    // })
+
+$(document).ready(function() {
+    var datatable = $('#evento2221').DataTable({
+        select: {
+            style: 'multi'
+        },
+        "aaSorting": [
+            [0, "desc"]
+        ],
+        "processing": true,
+        "language": {
+            "lengthMenu": "Exibição _MENU_ Registros por página",
+            "zeroRecords": "Nada encontrado - desculpe",
+            "info": " Mostrando página _PAGE_ ate _PAGES_",
+            "sLoadingRecords": "Carregando...",
+            "sProcessing": "Processando...",
+            "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+            "infoFiltered": "(filtrado de _MAX_ total linhas)",
+            "search": "Pesquisar:",
+            "paginate": {
+                "first": "Primeiro",
+                "last": "Último",
+                "next": "Próximo",
+                "previous": "Anterior"
+            },
+        },
+        "ajax": {
+            "url": BASE_URL + "/ajax2221/buscaGetEvtTox",
+            "type": 'POST',
+            "data": function(d) {
+                d.actionTox = "action";
+            },
+            "dataSrc": ""
+        },
+        "columns": [
+            { data: "codevttoxicolog" },
+            { data: "razaosocial" },
+            { data: "nomefuncionario" },
+            { data: "codseqexame" },
+            {
+                data: "datacriacao",
+                "render": function(data, type, row, meta) {
+                    date = new Date();
+
+                    function dateToEN(date) {
+                        return date.split('-').reverse().join('/');
+                    };
+                    return dateToEN(data);
+                },
+            },
+            {
+                data: "tipoenvio",
+                "render": function(data, type, row, meta) {
+                    console.log(row);
+                    if (row.statusenvio == 1) {
+                        return '<button class="btn btn-info btn-sm"  disabled>AGUADANDO ENVIO</button>';
+                    } else if (row.statusenvio == 2) {
+                        return '<button class="btn btn-warning btn-sm"  disabled>' + row.protocoloesocial + '</button>';
+                    } else {
+                        return '<button class="btn btn-danger btn-sm"  disabled>' + row.nrrecibo + '</button>';
+
+                    } // } info ,warning
+                }
+            },
+            {
+                data: "codevttoxicolog",
+                "render": function(data, type, row, meta) {
+
+                    if (row.statusenvio == 1 && row.protocoloesocial == null) {
+                        return '<a class="btn btn-primary btn-sm" href="' + BASE_URL + '/sst2221/editEvt2221/' + row.idevttoxicolog + '-' + row.codevttoxicolog + '">' + 'Editar' + '</a>';
+                    } else if (row.statusenvio == 2 && row.protocoloesocial != null) {
+                        return '<a class="btn btn-primary btn-sm" href="' + BASE_URL + '/sst2221/editEvt2221/' + row.idevttoxicolog + '-' + row.codevttoxicolog + '">' + 'Editar' + '</a>';
+                    } else {
+                        return '<button class="btn btn-primary btn-sm" disabled>' + 'Editar' + '</button>';
+
+                    }
+                }
+            },
+            {
+                data: "codevttoxicolog",
+                "render": function(data, type, row, meta) {
+                        if (row.statusenvio == 1 && row.protocoloesocial == null) {
+                            return '<a class="btn btn-danger btn-sm" href="' + BASE_URL + '/sst2221/delete2221/' + data + '" >' + 'Delete' + '</a>';
+                        } else if (row.statusenvio == 2 && row.protocoloesocial != null) {
+                            return '<a class="btn btn-danger btn-sm" href="' + BASE_URL + '/sst2221/delete2221/' + data + '" >' + 'Delete' + '</a>';
+                        } else {
+                            return '<button class="btn btn-danger btn-sm" disabled>' + 'Delete' + '</button>';
+                        }
+
+
+                    }
+                    // "render": function(data, type, row, meta) {
+                    //     return '<a class="btn btn-danger btn-sm" href="' + BASE_URL + '/sstFuncionario/delete/' + data + '">' + 'Delete' + '</a>';
+                    // }
+            },
+        ],
+    });
+    $("#evento2221").show();
+})

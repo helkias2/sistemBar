@@ -1,0 +1,410 @@
+// ----- EMPRESA ---------//
+$(document).ready(function(){
+    $("#ModalEmpEvt2220").on('keyup', function(){
+        var buscEvtEmp = $("#buscEmpEvt2220").val();
+
+        if(buscEvtEmp!=''){
+        $.ajax({
+            url: BASE_URL+ "/ajax2220/buscaEmpresaEvt",
+            type: 'POST',
+            datatype: 'json',
+            cache: false,
+            async: false,
+            data: {buscEvtEmp:buscEvtEmp},
+            success: function(data){
+                json = data.replace(/(\r\n|\n|\r)/gm,"");
+                    var json = $.parseJSON(json);
+                    var html = '';
+                    for( var i = 0; i < json.length && json != ''; ++i) {
+                        html += '<tr id="trtr"> <td id="cdempevtmt">'+json[i].codempresa+
+                                '</td> <td id="rzsempeevtmt">'+json[i].razaosocial+
+                                '</td> <td id="ntmempevtmt">'+json[i].nrmatricula+'</td></tr>';
+                    }
+                $('#bodyDdEmpresaEvt').html(html);
+                $('#bodyDdEmpresaEvt').show();
+                },
+            })
+        return false;
+        }
+    })
+    $("input[name=buscaDado_Emp]").keyup(function(){ //pega o css da tabela 
+        var tabela = $(this).attr('alt');
+        if( $(this).val() != ""){
+            $("."+tabela+" tbody>tr").hide();
+            $("."+tabela+" td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+        } else{
+            $("."+tabela+" tbody>tr").show();
+        }
+    });
+    var vl ='';
+    $.extend($.expr[":"], {
+        "contains-ci": function(elem, i, match, array) {
+            return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+    pegarvlores();
+    function pegarvlores(){ 
+    $(document).ready(function(){
+        $("#bodyDdEmpresaEvt").on('click', 'tr', function (e) {
+            e.preventDefault();
+            $(this).toggleClass('ativo');
+            $(this).siblings().removeClass('ativo');
+            var cdempmt = $(this).find('td[id=cdempevtmt]').text();
+            var rzempmt = $(this).find('td[id=rzsempeevtmt]').text();
+            var nmemmt = $(this).find('td[id=ntmempevtmt]').text();
+            jsonmonit = {'codemp':cdempmt, 'razaoemp':rzempmt,'numemp':nmemmt};
+            pegarvlaso(jsonmonit);
+        });
+    });
+}
+function pegarvlaso(jsonmonit){     
+        $("#enviaEvtMonit").on('click', function (e) {
+            e.preventDefault();     
+            if( jsonmonit != ''){   
+
+                $("#idEmpresaEvt").val(jsonmonit.codemp);
+                $("#matriculaEvt").val(jsonmonit.razaoemp);
+                $("#razsocialEvt").val(jsonmonit.numemp);
+
+            }
+             
+            carregarDados();
+            $("#bodyDdEmpresaEvt tr").remove();
+        });
+    return false;
+    }
+    $("#enviaEvtMonit").on('click', function(){
+        $("#bodyDdEmpresaEvt tr").remove();
+    });
+    $("#fecharEvtMonit").on('click', function(){
+        $("#bodyDdEmpresaEvt tr").remove();
+    });
+})
+
+$("#EnviarMt2220").on('click', function(){
+    alert("EU CONSIGO");
+});
+
+
+function carregarDados(){
+    var EvtEmp = $("#idEmpresaEvt").val();
+    var datatable = $('#funcionario').DataTable({
+    select: {
+        style: 'multi'
+    },
+   "aaSorting": [[ 3, "asc" ]],
+   "processing": true,
+   //"serverSide": true,
+   "order":[],
+   "language": {
+            "lengthMenu": "Exibição _MENU_ Registros por página",
+            "zeroRecords": "Nada encontrado - desculpe",
+            "info": " Mostrando página _PAGE_ ate _PAGES_",
+            "infoEmpty": "Nenhum registro disponível",
+            "infoFiltered": "(filtrado de _MAX_ total linhas)",
+            "search":         "Procurar:",
+            "paginate": {
+            "first":      "Primeiro",
+            "last":       "Último",
+            "next":       "Próximo",
+            "previous":   "Anterior" 
+        },
+    },
+
+   "ajax":{
+        "url": BASE_URL + "/ajax2220/buscaFuncionariosEvt",
+        "type": 'POST',
+        "data": function(d) {
+            d.empMonit = $("#idEmpresaEvt").val();   
+        },
+        "dataSrc":""
+    },
+
+    "columns":[
+
+   {data:"codfuncionario"},
+   {data:"codempresa"},
+   {data:"razaosocial"},
+   {data:"cpf"},
+   {data:"nomefuncionario"},
+   {data:"pis"},
+ 
+   {
+        data: "codfuncionario",
+       "render": function (data, type, row, meta) { return '<a class="btn btn-info btn-sm" href="'+BASE_URL+'/sst2220/setFuncionario2220?valorF=' + data +'&valorE='+EvtEmp+ '">' + 'View' + '</a>'; }
+    }
+    ],
+
+    });
+    // $('#funcionario tbody').on( 'click', 'button', function () {
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     alert( data[0] +"'s salary is: "+ data[ 5 ] );
+    // });
+$("#funcionario").show();
+}
+
+
+
+
+
+// //----------- FUNCIONARIO ------------//
+// $(document).ready(function(){
+//     $("#ModalFuncEv2220").on('keyup', function(){
+//         var empMonit    = $("#idEmpresaEvt").val();
+//         var funcMonit   = $("#buscFuncEvt2220").val();
+
+//         if(empMonit!='' && funcMonit!='' ){
+//         $.ajax({
+//             url: BASE_URL+ "/ajax2220/buscaFuncionariosEvt",
+//             type: 'POST',
+//             datatype: 'json',
+//             cache: false,
+//             async: false,
+//             data: {empMonit:empMonit, funcMonit:funcMonit},
+//             success: function(data){
+//                 json = data.replace(/(\r\n|\n|\r)/gm,"");
+//                     var json = $.parseJSON(json);
+//                     var html = '';
+//                     for( var i = 0; i < json.length && json != ''; ++i){
+//                         html += '<tr>'+
+//                                 '<td id="cdfuncvtmt">'+json[i].codfuncionario+
+//                                 '</td> <td id="codempfuncevtmt" style="display:none">'+json[i].codempresa+
+//                                 '</td> <td id="nomefuncevtmt">'+json[i].nomefuncionario+
+//                                 '</td> <td id="cpffuncevtmt">'+json[i].cpf+
+//                                 '</td> <td id="matfuncevtmt" style="display:none">'+json[i].matriculaempregador+
+//                                 '</td> <td id="ntmevtmt" style="display:none">'+json[i].pis+'</td></tr>';
+//                     }
+//                 $('#bodyDdFuncEvt2220').html(html);
+//                 $('#bodyDdFuncEvt2220').show();
+//                 },
+//             })
+//         return false;
+//         }
+//     })
+//     $("input[name=tableDdFuncEvt]").keyup(function(){ //pega o css da tabela 
+//         var tabela = $(this).attr('alt');
+//         if( $(this).val() != ""){
+//             $("."+tabela+" tbody>tr").hide();
+//             $("."+tabela+" td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+//         } else{
+//             $("."+tabela+" tbody>tr").show();
+//         }
+//     });
+//     var vl ='';
+//     $.extend($.expr[":"], {
+//         "contains-ci": function(elem, i, match, array) {
+//             return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+//         }
+//     });
+//     pegarvlores();
+//     function pegarvlores(){ 
+//     $(document).ready(function(){
+//         $("#bodyDdFuncEvt2220").on('click', 'tr', function (e) {
+//             e.preventDefault();
+//             $(this).toggleClass('ativo');
+//             $(this).siblings().removeClass('ativo');
+//             var cdfuncmt = $(this).find('td[id=cdfuncvtmt]').text();
+//             var codempfuncmt = $(this).find('td[id=codempfuncevtmt]').text();
+//             var nomfuncmt = $(this).find('td[id=nomefuncevtmt]').text();
+//             var cpffuncmt = $(this).find('td[id=cpffuncevtmt]').text();
+//             var matfuncmt = $(this).find('td[id=matfuncevtmt]').text();
+//             var nitfuncmt = $(this).find('td[id=ntmevtmt]').text();
+
+//             jsonFCmonit = {'cdFCmt':cdfuncmt,  'codempFCmt':codempfuncmt, 'nomFCmt':nomfuncmt,'cpfFCmt':cpffuncmt, 'matFCmt':matfuncmt,'nitFCmt':nitfuncmt};
+//             pegarvlaso(jsonFCmonit);
+//         });
+//     });
+// }
+// function pegarvlaso(jsonFCmonit){     
+//         $("#EnviarMt2220").on('click', function (e) {
+//             e.preventDefault();     
+//             if( jsonFCmonit != ''){   
+//                 $("#codFunc").val(jsonFCmonit.cdFCmt);
+//                 $("#codFuncEmp").val(jsonFCmonit.codempFCmt);
+//                 $("#nomeFunc").val(jsonFCmonit.nomFCmt);
+//                 $("#cpfFunc").val(jsonFCmonit.cpfFCmt);
+//                 $("#matriculaFunc").val(jsonFCmonit.matFCmt);
+//                 $("#nisFunc").val(jsonFCmonit.nitFCmt);
+//             }
+//             $("#bodyDdFuncEvt2220 tr").remove();
+//                     });
+//     return false;
+//     }
+//     $("#EnviarMt2220").on('click', function(){
+//         $("#bodyDdFuncEvt2220 tr").remove();
+//     });
+//     $("#fecharMt2220").on('click', function(){
+//         $("#bodyDdFuncEvt2220 tr").remove();
+//     });
+// })
+
+
+
+// //----------- BUSCA EXAME ---------//
+// $(document).ready(function(){
+//     $("#MODALEXAME2220").on('keyup', function(){
+//         var empMonitExame    = $("#idEmpresaEvt").val();
+//         var funcMonitExame   = $("#codFunc").val();
+//         var buscaMonitExame   = $("#buscExameEvt2220").val();    
+
+//         if(empMonitExame!='' && funcMonitExame!='' && buscaMonitExame!=''){
+//         $.ajax({
+//             url: BASE_URL+ "/ajax2220/buscaExameFuncionarioEvt",
+//             type: 'POST',
+//             datatype: 'json',
+//             cache: false,
+//             async: false,
+//             data: {empMonitExame:empMonitExame, funcMonitExame:funcMonitExame, buscaMonitExame:buscaMonitExame},
+//             success: function(data){
+//                     json = data.replace(/(\r\n|\n|\r)/gm,"");
+//                     var json = $.parseJSON(json);
+//                     var html = '';
+//                     for( var i = 0; i < json.length && json != ''; ++i) {
+//                         html += '<tr id="trtr"> <td id="cdexameMT">'+json[i].codexame+
+//                                 '</td> <td id="rzsexameMT">'+json[i].nomeexame+
+//                                 '</td> <td id="rzsexameMT">'+json[i].nomeexame+
+//                                 '</td> <td id="rzsexameMT">'+json[i].nomeexame+
+//                                 '</td> <td id="datexameMT">'+json[i].datvencimento+'</td></tr>';
+//                     }
+//                 $('#bodyDdExemaEvt2220').html(html);
+//                 $('#bodyDdExemaEvt2220').show();
+//                 },
+//             })
+//         return false;
+//         }
+//     })
+//     $("input[name=buscExameEvt2220]").keyup(function(){ //pega o css da tabela 
+//         var tabela = $(this).attr('alt');
+//         if( $(this).val() != ""){
+//             $("."+tabela+" tbody>tr").hide();
+//             $("."+tabela+" td:contains-ci('" + $(this).val() + "')").parent("tr").show();
+//         } else{
+//             $("."+tabela+" tbody>tr").show();
+//         }
+//     });
+//     var vl ='';
+//     $.extend($.expr[":"], {
+//         "contains-ci": function(elem, i, match, array) {
+//             return (elem.textContent || elem.innerText || $(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+//         }
+//     });
+//     pegarvlores();
+//     function pegarvlores(){ 
+//     $(document).ready(function(){
+//         $("#bodyDdExemaEvt2220").on('click', 'tr', function (e) {
+//             e.preventDefault();
+//             $(this).toggleClass('ativo');
+//             $(this).siblings().removeClass('ativo');
+//             var cdexamemt = $(this).find('td[id=cdexameMT]').text();
+//             var rzexamemt = $(this).find('td[id=rzsexameMT]').text();
+//             var dtexamemt = $(this).find('td[id=datexameMT]').text();
+//             jsonexamemonit = {'codexame':cdexamemt, 'nomexame':rzexamemt,'dtexame':dtexamemt};
+//             pegarvlaso(jsonexamemonit);
+//         });
+//     });
+// }
+// function pegarvlaso(jsonexamemonit){     
+//         $("#EnviarEXMT").on('click', function (e) {
+//             e.preventDefault();     
+//             html = '';
+//             if( jsonexamemonit != ''){   
+
+//                 for( i in jsonexamemonit){
+//                     html = '<tr style="background-color: #fff">'+
+//                     //'<td class="cdexame" data-id="'+jsonexame.codigofunc+'">'+jsonexame.codigofunc+'</td>'+
+//                     '<td class="drisco">'+jsonexamemonit.codexame+'</td>'+
+//                     '<td class="crisco">'+jsonexamemonit.nomexame+'</td>'+
+//                     '<td class="descrisco">'+jsonexamemonit.dtexame+'</td>'+
+//                     '<td class="descrisco">'+jsonexamemonit.dtexame+'</td>'+
+//                     '<td class="descrisco">'+jsonexamemonit.dtexame+'</td>'+
+//                     '</tr>';
+//                 }
+//                 $("#tbodyEvtMonit").append(html);
+//                 $("#tbodyEvtMonit").show();
+//             }
+//             jsonexamemonit = '';
+//             $("#bodyDdExemaEvt2220 tr").remove();
+//         });
+//     return false;
+//     }
+//     $("#tbodyEvtMonit").on('click', 'tr',function(obj){
+//     let id = $(obj).attr('data-id');
+//     $(this).closest('tr').remove();
+//     });
+//     $("#enviaEvtMonit").on('click', function(){
+//         $("#bodyDdExemaEvt2220 tr").remove();
+//     });
+//     $("#fecharEvtMonit").on('click', function(){
+//         $("#bodyDdExemaEvt2220 tr").remove();
+//     });
+// })
+
+
+
+ // $(function(){
+
+// carregadadosExame();
+//     function carregadadosExame(){
+//     let cdfuncionario = $("#codFunc").val();
+//     let cdEmpresa     = $("#idEmpresaEvt").val();
+//     let codCarregar   = 'Action';
+//         if(cdfuncionario!='' && cdEmpresa!=''){
+//             $.ajax({
+//                 type:'POST',
+//                 url:BASE_URL+'/ajax2220/getRiscosFuncionarioEvt',
+//                 data:{cdfuncionario:cdfuncionario, cdEmpresa:cdEmpresa, codCarregar:codCarregar},
+//                 success:function(json){
+//                     json = json.replace(/(\r\n|\n|\r)/gm,"");
+//                     json = json.replace(/\t/,"");
+//                     var json = JSON.parse(json);
+                    
+//                     //$("#riscosFuncionarioAnalise option").remove();
+//                     var html ='';
+//                     for(var i = 0; i < json.length; i++) {
+//                        // combobox.append( $('<option>', {value: json[i].codrisco, text: json[i].descrisco})
+//                         //);
+//                         html += '<tr>'+
+//                                 '<td>'+json[i].codexame+'</td>'+
+//                                 '<td>'+json[i].nomeexame+'</td>'+
+//                                 '<td>'+json[i].datvencimento+'</td>'+
+//                                 '<td>'+json[i].codproced+'</td>'+
+//                                 '<td>'+json[i].descproced+'</td>'+
+//                                 '<td>'+json[i].tipoexameaso+'</td>';
+//                     }
+//                     $("#tbodyEvtMonit").append(html);
+//                     $("#tbodyEvtMonit").show(html);
+//                 }
+//             })   
+//         } 
+//     }  
+
+// })      
+
+
+
+
+    // -----------------------------  lista dos resultados OS--------------------------//
+    // var grid = $("#ordem").bootgrid({
+    // labels: {
+    //     noResults: "Não existe Resultados",
+    //     search: "pesquisa",
+    //     infos: "Mostrando {{ctx.start}} de {{ctx.end}} de {{ctx.total}} incrições",
+    //     responsiveTable: 'table-responsive'+ 'data-row-id'
+    // },    
+    // caseSensitive: false,    
+    // post: function(){
+    //         return{ id:"b0df282a-0d67-40e5-8558-c9e93b7befed" };
+    // },
+    // formatters: {
+    //     "commands": function(column, row) {
+    //             return  "<button type=\"button\" style=\"width:70px;height:35px;\" class=\"btn btn-xs btn-success command-atestado\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-lg\"></span>Visualizar</button>"; 
+    //     }
+    // }     
+    // }).on("loaded.rs.jquery.bootgrid", function() {
+    //     grid.find(".command-atestado").on("click", function(e) {
+    //         e.preventDefault();
+    //         let valor = $(this).attr('data-row-id')
+    //             var url = BASE_URL+"/sstOs/osGet/"+valor;
+    //             window.open(url, "sstOs", "width=820,height=500");
+    //     })
+    // });
