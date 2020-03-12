@@ -1,0 +1,9 @@
+# Ignore Mac system files
+.DS_store
+
+# Ignore node_modules folder
+vendor
+core
+
+# Ignore all text files
+*.txt
