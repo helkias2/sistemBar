@@ -2,8 +2,8 @@
 .DS_store
 
 # Ignore node_modules folder
-vendor
-core
+/vendor
+/core
 
 # Ignore all text files
 *.txt
